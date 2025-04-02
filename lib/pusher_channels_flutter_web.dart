@@ -2,14 +2,15 @@
 library pusher_channels_flutter;
 
 import 'dart:async';
-import 'package:js/js.dart';
-import 'package:js/js_util.dart' as js_util;
+
 // In order to *not* need this ignore, consider extracting the 'web' version
 // of your plugin as a separate package, instead of inlining it in the same
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:js/js.dart';
+import 'package:js/js_util.dart' as js_util;
 import 'package:pusher_channels_flutter/pusher-js/core/auth/options.dart';
 import 'package:pusher_channels_flutter/pusher-js/core/channels/channel.dart';
 import 'package:pusher_channels_flutter/pusher-js/core/channels/presence_channel.dart';
@@ -62,8 +63,7 @@ class PusherChannelsFlutterWeb {
       const StandardMethodCodec(),
       registrar,
     );
-    pluginInstance.methodChannel!
-        .setMethodCallHandler(pluginInstance.handleMethodCall);
+    pluginInstance.methodChannel!.setMethodCallHandler(pluginInstance.handleMethodCall);
   }
 
   Future<dynamic> handleMethodCall(MethodCall call) async {
@@ -93,8 +93,7 @@ class PusherChannelsFlutterWeb {
       default:
         throw PlatformException(
           code: 'Unimplemented',
-          details:
-              'pusher_channels for web doesn\'t implement \'${call.method}\'',
+          details: 'pusher_channels for web doesn\'t implement \'${call.method}\'',
         );
     }
   }
@@ -128,12 +127,11 @@ class PusherChannelsFlutterWeb {
     final String event = msg['event'] ?? '';
     final String channel = msg['channel'] ?? '';
     final Map<String, dynamic> data = msg['data'] ?? {};
-    String? userId = data['user_id'];
+    String? userId = data['user_id'].toString();
     final Map<String, dynamic>? userInfo = data['user_info'];
 
     if (event == 'pusher_internal:subscription_error') {
-      methodChannel!.invokeMethod(
-          'onSubscriptionError', {'message': msg['error'], 'error': data});
+      methodChannel!.invokeMethod('onSubscriptionError', {'message': msg['error'], 'error': data});
     } else if (event == 'pusher_internal:member_added') {
       methodChannel!.invokeMethod('onMemberAdded', {
         'channelName': channel,
@@ -167,8 +165,7 @@ class PusherChannelsFlutterWeb {
   }
 
   void onStateChange(dynamic jsState) {
-    final Map<String, dynamic> state =
-        dartify<Map<String, dynamic>>(jsState ?? {});
+    final Map<String, dynamic> state = dartify<Map<String, dynamic>>(jsState ?? {});
     final String current = state['current'] ?? '';
     final String previous = state['previous'] ?? '';
     methodChannel!.invokeMethod('onConnectionStateChange', {
